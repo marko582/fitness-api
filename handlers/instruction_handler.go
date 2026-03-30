@@ -52,7 +52,6 @@ func GetInstructionsByExerciseID(w http.ResponseWriter, r *http.Request) {
 		instructions = append(instructions, ins)
 	}
 
-	// da ne vrati null nego []
 	if instructions == nil {
 		instructions = []models.Instruction{}
 	}

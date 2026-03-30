@@ -51,6 +51,7 @@ func GetAllExercises(w http.ResponseWriter, r *http.Request) {
 func GetExercises(w http.ResponseWriter, r *http.Request) {
 	bodyPart := r.URL.Query().Get("bodyPart")
 	equipments := r.URL.Query().Get("equipments")
+	difficulty := r.URL.Query().Get("difficulty")
 
 	query := `
 		SELECT DISTINCT e.id, e.name, e.image_url, e.gender, e.exercise_type, e.overview
@@ -85,6 +86,12 @@ func GetExercises(w http.ResponseWriter, r *http.Request) {
 	if equipments != "" {
 		query += " AND LOWER(eq.name) = LOWER($" + strconv.Itoa(argIndex) + ")"
 		args = append(args, equipments)
+		argIndex++
+	}
+
+	if difficulty != "" {
+		query += " AND LOWER(e.difficulty) = LOWER($" + strconv.Itoa(argIndex) + ")"
+		args = append(args, difficulty)
 		argIndex++
 	}
 
@@ -201,7 +208,6 @@ func GetRelatedExercises(w http.ResponseWriter, r *http.Request) {
 		exercises = append(exercises, ex)
 	}
 
-	// da ne vrati null
 	if exercises == nil {
 		exercises = []models.Exercise{}
 	}

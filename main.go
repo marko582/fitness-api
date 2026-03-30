@@ -39,6 +39,9 @@ func main() {
 
 		// get related exercises by id
 		r.Get("/exercises/{id}/related", handlers.GetRelatedExercises)
+
+		// get all equipments
+		r.Get("/equipments", handlers.GetAllEquipments)
 	})
 
 	log.Println("Server running on http://localhost:8080")
