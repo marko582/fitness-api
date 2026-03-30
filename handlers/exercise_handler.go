@@ -14,7 +14,7 @@ import (
 
 func GetAllExercises(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.DB.Query(`
-        SELECT id, name, image_url, gender, exercise_type, overview 
+        SELECT id, name, image_url, video_url, gender, exercise_type, difficulty, overview 
         FROM public.exercises;
     `)
 	if err != nil {
@@ -32,8 +32,10 @@ func GetAllExercises(w http.ResponseWriter, r *http.Request) {
 			&ex.ID,
 			&ex.Name,
 			&ex.Image,
+			&ex.VideoURL,
 			&ex.Gender,
 			&ex.Type,
+			&ex.Difficulty,
 			&ex.Overview,
 		)
 		if err != nil {
@@ -54,7 +56,7 @@ func GetExercises(w http.ResponseWriter, r *http.Request) {
 	difficulty := r.URL.Query().Get("difficulty")
 
 	query := `
-		SELECT DISTINCT e.id, e.name, e.image_url, e.gender, e.exercise_type, e.overview
+		SELECT DISTINCT e.id, e.name, e.image_url, e.video_url, e.gender, e.exercise_type, e.difficulty, e.overview
 		FROM public.exercises e
 	`
 
@@ -111,8 +113,10 @@ func GetExercises(w http.ResponseWriter, r *http.Request) {
 			&ex.ID,
 			&ex.Name,
 			&ex.Image,
+			&ex.VideoURL,
 			&ex.Gender,
 			&ex.Type,
+			&ex.Difficulty,
 			&ex.Overview,
 		)
 		if err != nil {
@@ -139,15 +143,17 @@ func GetExerciseByID(w http.ResponseWriter, r *http.Request) {
 	var ex models.Exercise
 
 	err = db.DB.QueryRow(`
-		SELECT id, name, image_url, gender, exercise_type, overview
+		SELECT id, name, image_url, video_url, gender, exercise_type, difficulty, overview
 		FROM public.exercises
 		WHERE id = $1
 	`, id).Scan(
 		&ex.ID,
 		&ex.Name,
 		&ex.Image,
+		&ex.VideoURL,
 		&ex.Gender,
 		&ex.Type,
+		&ex.Difficulty,
 		&ex.Overview,
 	)
 
@@ -175,7 +181,7 @@ func GetRelatedExercises(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.DB.Query(`
-		SELECT e.id, e.name, e.image_url, e.gender, e.exercise_type, e.overview
+		SELECT e.id, e.name, e.image_url, e.video_url, e.gender, e.exercise_type, e.difficulty, e.overview
 		FROM public.exercise_relations er
 		JOIN public.exercises e ON e.id = er.related_exercise_id
 		WHERE er.exercise_id = $1
@@ -196,8 +202,10 @@ func GetRelatedExercises(w http.ResponseWriter, r *http.Request) {
 			&ex.ID,
 			&ex.Name,
 			&ex.Image,
+			&ex.VideoURL,
 			&ex.Gender,
 			&ex.Type,
+			&ex.Difficulty,
 			&ex.Overview,
 		)
 		if err != nil {
